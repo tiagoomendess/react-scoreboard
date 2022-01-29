@@ -1,0 +1,50 @@
+.scoreboard-admin {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.scoreboard-admin > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.scoreboard-admin img {
+    width: 10vw;
+    height: auto;
+}
+
+.scoreboard-admin .score {
+    font-size: 7vw;
+    margin: 0 10px;
+}
+
+.scoreboard-admin .score-btns {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.scoreboard-admin .score-btns > button {
+    padding: 0 7px;
+    margin: 0 0 10px 0;
+}
+
+.scoreboard-admin .timer-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.scoreboard-admin .timer-buttons > button {
+    margin: 0 5px;
+}
