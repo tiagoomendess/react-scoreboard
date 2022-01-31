@@ -1,5 +1,5 @@
 const axios = require('axios');
-const baseUrl = 'http://localhost:3001/matches';
+const baseUrl = process.env.NODE_ENV === 'production' ? 'https://placard-api.domingoasdez.com/matches' : 'http://localhost:3001/matches';
 
 export interface IMatch {
     id : number;

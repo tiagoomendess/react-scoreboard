@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3001/scoreboards';
+const baseUrl =  process.env.NODE_ENV === 'production' ? 'https://placard-api.domingoasdez.com/scoreboards' : 'http://localhost:3001/scoreboards';
 
 export interface IScoreBoard {
     code: number,
