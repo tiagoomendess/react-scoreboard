@@ -1,6 +1,7 @@
 import React from 'react';
 import Match from '../Match/Match';
 import matchService, { IMatch } from '../../services/matches'
+import PreLoad from '../PreLoad/PreLoad';
 import './index.css'
 
 interface IProps {
@@ -8,6 +9,8 @@ interface IProps {
 
 interface IState {
     matches: IMatch[];
+    code: number | null;
+    isLoading: boolean;
 }
 
 class Matches extends React.Component<IProps, IState> {
@@ -15,18 +18,40 @@ class Matches extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         this.state = {
-            matches: []
+            matches: [],
+            code: null,
+            isLoading: false,
         }
     }
 
     async componentDidMount() {
-        this.setState({ matches: await matchService.getAll() })
+        let code = null;
+        // try and get code from cookie
+        if (document.cookie.indexOf('code=') !== -1) {
+            code = document.cookie.split('code=')[1].split(';')[0]
+            code = parseInt(code)
+            console.log(`Found code ${code} in cookie`)
+        }
+
+        this.setState({
+            isLoading: true,
+        })
+
+        const matches = await matchService.getAll()
+
+        this.setState({
+            matches: matches,
+            code: code,
+            isLoading: false,
+        })
     }
 
     render() {
         return (<div className="matches">
-            <p className="flow-text center">Escolha um dos jogos abaixo</p>
-            {this.state.matches.map((match, index) => <Match key={index} matchId={match.id} homeEmblem={match.home_emblem} awayEmblem={match.away_emblem} />)}
+            <PreLoad isLoading={this.state.isLoading}/>
+            <h1 hidden={this.state.isLoading} className="center">Escolha um dos jogos abaixo</h1>
+            <p hidden={this.state.matches.length >= 1 || this.state.isLoading} className='flow-text center'>Não existem jogos disponíveis</p>
+            {this.state.matches.map((match, index) => <Match key={index} matchId={match.id} homeEmblem={match.home_emblem} awayEmblem={match.away_emblem} code={this.state.code} />)}
         </div>)
     }
 

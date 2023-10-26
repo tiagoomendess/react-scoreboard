@@ -15,13 +15,22 @@ export interface IScoreBoard {
     timerPausedAt: number | null,
 }
 
+export interface IReserve {
+    success: boolean,
+    code: number,
+}
+
+export interface IRemove {
+    success: boolean,
+}
+
 async function get(code : number) : Promise<IScoreBoard> {
     let { data } = await axios.get(`${baseUrl}/${code}`);
     return data;
 }
 
-async function create(matchId: number) : Promise<IScoreBoard> {
-    let { data } = await axios.post(`${baseUrl}`, { matchId: matchId });
+async function create(matchId: number, code: number | null) : Promise<IScoreBoard> {
+    let { data } = await axios.post(`${baseUrl}`, { matchId: matchId, code: code });
     if (data && data.success)
         return data.created;
     else
@@ -36,10 +45,22 @@ async function update(scoreboard : IScoreBoard) : Promise<IScoreBoard> {
         throw new Error(data.message ?? "Erro a actualizar scoreboard");
 }
 
+async function reserve() : Promise<IReserve> {
+    let { data } = await axios.get(`${baseUrl}/reserve`);
+    return data;
+}
+
+async function remove(code : number) : Promise<IRemove> {
+    let { data } = await axios.delete(`${baseUrl}/${code}`);
+    return data;
+}
+
 const service = {
     get,
     create,
-    update
+    update,
+    reserve,
+    remove
 }
 
 export default service

@@ -5,20 +5,33 @@ import scoreboardService from '../../services/scoreboard';
 import './index.css'
 import StartPauseButton from '../StartPauseButton/StartPauseButton';
 import Timer from '../Timer/Timer';
+import { useNavigate } from 'react-router-dom';
+import PreLoad from '../PreLoad/PreLoad';
 
 const MINUTE_IN_MILLISECONDS = 60 * 1000;
 
 export default function ScoreBoardAdmin() {
     const { code } = useParams()
     const [scoreboard, setScoreboard] = useState({} as IScoreBoard)
+    const [isLoading, setIsLoading] = useState(true as boolean)
+
+    const navigate = useNavigate();
 
     useEffect(() => getScoreBoard(), []) // eslint-disable-line react-hooks/exhaustive-deps
 
     const getScoreBoard = () => {
         scoreboardService.get(parseInt(code ?? "")).then(scoreboard => {
             setScoreboard(scoreboard)
+            setIsLoading(false)
         }).catch(err => {
-            alert(err)
+            if (err.response.status === 404) {
+                console.log("Scoreboard not found, redirecting to create scoreboard")
+                navigate(`/matches`)
+                return
+            }
+
+            console.error(err)
+            alert("Erro ao tentar obter placard, ver logs. ")
         })
     }
 
@@ -28,7 +41,8 @@ export default function ScoreBoardAdmin() {
 
             })
             .catch(err => {
-                alert(err)
+                navigate(`/matches`)
+                console.error(`could not update scoreboard ${code}`, err)
             })
     }
 
@@ -109,51 +123,68 @@ export default function ScoreBoardAdmin() {
         setScoreboard(tmpScoreboard)
     }
 
-    return (
-        <div className="scoreboard-admin">
-            <h1>
-                Placard {code}&nbsp;
-                <Link to={`/scoreboards/${scoreboard.code}`}>
-                    <i className="material-icons">live_tv</i>
-                </Link>
-            </h1>
-            <div>
-                <div><img src={scoreboard.homeEmblem} alt="" /></div>
-                <div><img src={scoreboard.awayEmblem} alt="" /></div>
-            </div>
-            <div>
-                <div className="score-btns">
-                    <button data-name="home-up" onClick={handleScoreBtnClick} className="waves-effect waves-light btn green">
-                        <i data-name="home-up" className="material-icons">arrow_upward</i>
-                    </button>
-                    <button data-name="home-down" onClick={handleScoreBtnClick} className="waves-effect waves-light btn red">
-                        <i data-name="home-down" className="material-icons">arrow_downward</i>
-                    </button>
-                </div>
-                <span className="score">{scoreboard.homeScore}-{scoreboard.awayScore}</span>
-                <div className="score-btns">
-                    <button data-name="away-up" onClick={handleScoreBtnClick} className="waves-effect waves-light btn green">
-                        <i data-name="away-up" className="material-icons">arrow_upward</i>
-                    </button>
-                    <button data-name="away-down" onClick={handleScoreBtnClick} className="waves-effect waves-light btn red">
-                        <i data-name="away-down" className="material-icons">arrow_downward</i>
-                    </button>
-                </div>
-            </div>
+    const handleDelete = async (e: any) => {
+        scoreboardService.remove(parseInt(code ?? ""))
+            .then(() => {
+                console.log(`scoreboard ${code} removed`)
+                navigate(`/matches`)
+            })
+            .catch(err => {
+                console.error("could not remove scoreboard", err)
+            })
+    }
 
-            <div>
-                <Timer
-                    timerStart={scoreboard.timerStart}
-                    timerPausedAt={scoreboard.timerPausedAt}
-                    hideOnZero={false}
-                />
-            </div>
-            <div className="timer-buttons">
-                <button onClick={handleBackTime} className="waves-effect waves-light btn blue-grey darken-2"><i className="material-icons">fast_rewind</i></button>
-                <button onClick={handleResetTime} className="waves-effect waves-light btn red"><i className="material-icons">replay</i></button>
-                <StartPauseButton clickHandler={handleStartPauseBtnClick} isPaused={scoreboard.timerPausedAt != null} />
-                <button onClick={handleSetHalfTime} className="waves-effect waves-light btn orange darken-3"><i className="material-icons">alarm_on</i></button>
-                <button onClick={handleForwardsTime} className="waves-effect waves-light btn blue-grey darken-2"><i className="material-icons">fast_forward</i></button>
+    return (
+        <div>
+            <PreLoad isLoading={isLoading}/>
+            <div className="scoreboard-admin" hidden={isLoading}>
+                <h1>
+                    <a href="#" onClick={handleDelete}>
+                        <i className="material-icons">delete</i>
+                    </a>
+                    &nbsp;&nbsp;Placard {code}&nbsp;&nbsp;
+                    <Link to={`/scoreboards/${scoreboard.code}`}>
+                        <i className="material-icons">live_tv</i>
+                    </Link>
+                </h1>
+                <div>
+                    <div><img src={scoreboard.homeEmblem} alt="" /></div>
+                    <div><img src={scoreboard.awayEmblem} alt="" /></div>
+                </div>
+                <div>
+                    <div className="score-btns">
+                        <button data-name="home-up" onClick={handleScoreBtnClick} className="waves-effect waves-light btn green">
+                            <i data-name="home-up" className="material-icons">arrow_upward</i>
+                        </button>
+                        <button data-name="home-down" onClick={handleScoreBtnClick} className="waves-effect waves-light btn red">
+                            <i data-name="home-down" className="material-icons">arrow_downward</i>
+                        </button>
+                    </div>
+                    <span className="score">{scoreboard.homeScore}-{scoreboard.awayScore}</span>
+                    <div className="score-btns">
+                        <button data-name="away-up" onClick={handleScoreBtnClick} className="waves-effect waves-light btn green">
+                            <i data-name="away-up" className="material-icons">arrow_upward</i>
+                        </button>
+                        <button data-name="away-down" onClick={handleScoreBtnClick} className="waves-effect waves-light btn red">
+                            <i data-name="away-down" className="material-icons">arrow_downward</i>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <Timer
+                        timerStart={scoreboard.timerStart}
+                        timerPausedAt={scoreboard.timerPausedAt}
+                        hideOnZero={false}
+                    />
+                </div>
+                <div className="timer-buttons">
+                    <button onClick={handleBackTime} className="waves-effect waves-light btn blue-grey darken-2"><i className="material-icons">fast_rewind</i></button>
+                    <button onClick={handleResetTime} className="waves-effect waves-light btn red"><i className="material-icons">replay</i></button>
+                    <StartPauseButton clickHandler={handleStartPauseBtnClick} isPaused={scoreboard.timerPausedAt != null} />
+                    <button onClick={handleSetHalfTime} className="waves-effect waves-light btn orange darken-3"><i className="material-icons">alarm_on</i></button>
+                    <button onClick={handleForwardsTime} className="waves-effect waves-light btn blue-grey darken-2"><i className="material-icons">fast_forward</i></button>
+                </div>
             </div>
         </div>
     );

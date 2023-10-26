@@ -6,18 +6,18 @@ import { useNavigate } from 'react-router'
 interface MatchPropsInterface {
     key: number;
     matchId: number;
+    code: number | null;
     homeEmblem: string;
     awayEmblem: string;
 }
 
-export default function Match({ matchId, homeEmblem, awayEmblem }: MatchPropsInterface) {
+export default function Match({ matchId, homeEmblem, awayEmblem, code }: MatchPropsInterface) {
 
     const navigate = useNavigate();
 
     const handleClick = async () => {
-        //alert(`Match ${this.state.matchId}`)
         try {
-            let data = await scoreboardService.create(matchId)
+            let data = await scoreboardService.create(matchId, code)
             navigate(`/scoreboards/${data.code}/admin`)
         } catch (err) {
             alert(err)
