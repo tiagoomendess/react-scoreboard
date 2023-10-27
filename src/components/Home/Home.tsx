@@ -34,7 +34,7 @@ const Home = () => {
             setCode(parseInt(codeCookieValue))
         } else {
             scoreboardservice.reserve().then(data => {
-                document.cookie = `code=${data.code};max-age=43200;path=/`
+                document.cookie = `code=${data.code};max-age=600;path=/`
                 setCode(data.code)
             }).catch(err => {
                 console.error(err)

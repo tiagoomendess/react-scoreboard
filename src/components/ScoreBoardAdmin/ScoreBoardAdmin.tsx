@@ -25,6 +25,7 @@ export default function ScoreBoardAdmin() {
             setIsLoading(false)
         }).catch(err => {
             if (err.response.status === 404) {
+                document.cookie = `code=${code ?? ""};max-age=3600;path=/`
                 console.log("Scoreboard not found, redirecting to create scoreboard")
                 navigate(`/matches`)
                 return
@@ -38,7 +39,7 @@ export default function ScoreBoardAdmin() {
     const updateScoreBoard = (score: IScoreBoard) => {
         scoreboardService.update(score)
             .then(scoreboard => {
-
+                document.cookie = `code=${code ?? ""};max-age=3600;path=/`
             })
             .catch(err => {
                 navigate(`/matches`)

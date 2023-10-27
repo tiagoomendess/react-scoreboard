@@ -18,6 +18,7 @@ function ScoreBoard() {
         scoreboardService.get(parseInt(code ? code : "")).then(scoreboard => {
             setScoreboard(scoreboard)
             setIsLoading(false)
+            document.cookie = `code=${code ?? ""};max-age=600;path=/`
         }).catch(err => {
             // if it is 404 return to index
             if (err.response.status === 404) {
