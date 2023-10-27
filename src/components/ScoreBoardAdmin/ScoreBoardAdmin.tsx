@@ -139,7 +139,7 @@ export default function ScoreBoardAdmin() {
         <div>
             <PreLoad isLoading={isLoading}/>
             <div className="scoreboard-admin" hidden={isLoading}>
-                <h1>
+                <h4>
                     <a href="#" onClick={handleDelete}>
                         <i className="material-icons">delete</i>
                     </a>
@@ -147,7 +147,7 @@ export default function ScoreBoardAdmin() {
                     <Link to={`/scoreboards/${scoreboard.code}`}>
                         <i className="material-icons">live_tv</i>
                     </Link>
-                </h1>
+                </h4>
                 <div>
                     <div><img src={scoreboard.homeEmblem} alt="" /></div>
                     <div><img src={scoreboard.awayEmblem} alt="" /></div>
