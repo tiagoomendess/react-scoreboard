@@ -49,7 +49,7 @@ class Matches extends React.Component<IProps, IState> {
     render() {
         return (<div className="matches">
             <PreLoad isLoading={this.state.isLoading}/>
-            <h1 hidden={this.state.isLoading} className="center">Escolha um dos jogos abaixo</h1>
+            <h4 hidden={this.state.isLoading} className="center">Escolha um dos jogos abaixo</h4>
             <p hidden={this.state.matches.length >= 1 || this.state.isLoading} className='flow-text center'>Não existem jogos disponíveis</p>
             {this.state.matches.map((match, index) => <Match key={index} matchId={match.id} homeEmblem={match.home_emblem} awayEmblem={match.away_emblem} code={this.state.code} />)}
         </div>)
