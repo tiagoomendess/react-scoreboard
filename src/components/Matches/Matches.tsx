@@ -52,7 +52,7 @@ class Matches extends React.Component<IProps, IState> {
             <h4 hidden={this.state.isLoading} className="center">Escolha um dos jogos abaixo</h4>
             <p hidden={this.state.matches.length >= 1 || this.state.isLoading} className='flow-text center'>Não existem jogos disponíveis</p>
             {this.state.matches.map((match, index) => <Match key={index} matchId={match.id} homeEmblem={match.home_emblem} awayEmblem={match.away_emblem} code={this.state.code} />)}
-            <small hidden={this.state.isLoading || this.state.matches.length > 1}> Apenas aparecem os jogos de hoje</small>
+            <small className="center" hidden={this.state.isLoading || this.state.matches.length > 1}> Apenas aparecem os jogos de hoje</small>
         </div>)
     }
 }
