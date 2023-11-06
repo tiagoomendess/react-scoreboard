@@ -37,7 +37,13 @@ class Matches extends React.Component<IProps, IState> {
             isLoading: true,
         })
 
-        const matches = await matchService.getAll()
+        const matches = await matchService.getAll().catch((err) => {
+            this.setState({
+                isLoading: false,
+            })
+            console.log(err)
+            return []
+        })
 
         this.setState({
             matches: matches,
