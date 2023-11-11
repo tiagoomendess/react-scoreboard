@@ -99,27 +99,52 @@ export default function ScoreBoardAdmin() {
 
     const handleBackTime = async (e: any) => {
         let tmpScoreboard = Object.assign({}, scoreboard);
-        let now = new Date()
-        if (tmpScoreboard.timerStart) {
-            let result = tmpScoreboard.timerStart + MINUTE_IN_MILLISECONDS
-            tmpScoreboard.timerStart = result < now.getTime() ? now.getTime() : result
-            updateScoreBoard(tmpScoreboard)
-            setScoreboard(tmpScoreboard)
+        let now = new Date().getTime()
+        let result = 0
+        console.log("timerStart handleBackTime: ", tmpScoreboard.timerStart)
+
+        if (tmpScoreboard.timerStart === null && tmpScoreboard.timerPausedAt !== null) {
+            return
         }
+
+        if (tmpScoreboard.timerStart !== null) {
+            result = tmpScoreboard.timerStart + MINUTE_IN_MILLISECONDS
+        } else {
+            result = now - MINUTE_IN_MILLISECONDS
+        }
+
+        if (result <= now) {
+            tmpScoreboard.timerStart = result
+        } else {
+            tmpScoreboard.timerStart = null
+            tmpScoreboard.timerPausedAt = now
+        }
+
+        updateScoreBoard(tmpScoreboard)
+        setScoreboard(tmpScoreboard)
     }
 
     const handleForwardsTime = async (e: any) => {
-        let now = new Date()
+        let now = new Date().getTime()
         let tmpScoreboard = Object.assign({}, scoreboard);
-        tmpScoreboard.timerStart = (tmpScoreboard.timerStart ?? now.getTime() - 1000) - MINUTE_IN_MILLISECONDS
+        console.log("timerStart handleForwardsTime: ", tmpScoreboard.timerStart)
+        //tmpScoreboard.timerStart = (tmpScoreboard.timerStart ?? now.getTime() - 1000) - MINUTE_IN_MILLISECONDS
+
+        if (tmpScoreboard.timerStart === null) {
+            tmpScoreboard.timerStart = (tmpScoreboard.timerPausedAt ? tmpScoreboard.timerPausedAt : now) - MINUTE_IN_MILLISECONDS
+        } else {
+            tmpScoreboard.timerStart = tmpScoreboard.timerStart - MINUTE_IN_MILLISECONDS
+        }
+
         updateScoreBoard(tmpScoreboard)
         setScoreboard(tmpScoreboard)
     }
 
     const handleResetTime = async (e: any) => {
+        let now = new Date().getTime()
         let tmpScoreboard = Object.assign({}, scoreboard);
         tmpScoreboard.timerStart = null
-        tmpScoreboard.timerPausedAt = new Date().getTime()
+        tmpScoreboard.timerPausedAt = now
         updateScoreBoard(tmpScoreboard)
         setScoreboard(tmpScoreboard)
     }
