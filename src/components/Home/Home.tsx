@@ -31,6 +31,7 @@ const Home = () => {
     useEffect(() => {
         if (document.cookie.indexOf('code=') >= 0) {
             let codeCookieValue = document.cookie.split('code=')[1].split(';')[0]
+            document.cookie = `code=${codeCookieValue};max-age=600;path=/`
             setCode(parseInt(codeCookieValue))
         } else {
             scoreboardservice.reserve().then(data => {
@@ -50,7 +51,15 @@ const Home = () => {
     }, [])
 
     function checkScoreBoard() {
-        let codeStr = document.cookie.split('code=')[1].split(';')[0]
+        let codeStr = ""
+        try {
+            codeStr = document.cookie.split('code=')[1].split(';')[0]
+        } catch (err) {
+            console.log("No code cookie found, refreshing...")
+            window.location.reload();
+            return
+        }
+
         scoreboardservice.get(parseInt(codeStr)).then(data => {
             // Scoreboard has been created
             console.log("Scoreboard has been created, redirecting to admin page")
