@@ -19,7 +19,7 @@ const Home = () => {
         let url = `${baseUrl}/scoreboards/${code}/admin`
         let encodedUrl = encodeURIComponent(url)
         setQrCode(
-            `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=15&data=${encodedUrl}`
+            `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=15&data=${encodedUrl}`
         )
 
         setTimeout(() => {
@@ -38,10 +38,11 @@ const Home = () => {
                 setCode(data.code)
             }).catch(err => {
                 console.error(err)
+                setCode(0)
             })
         }
 
-        const requestInterval = setInterval(() => checkScoreBoard(), 7000);
+        const requestInterval = setInterval(() => checkScoreBoard(), 5000);
 
         return () => {
             clearInterval(requestInterval);
@@ -65,7 +66,7 @@ const Home = () => {
             <p className="flow-text center">Leia o QR Code para controlar este placard</p>
             <br />
             <p className='flow-text center'>
-                <img src={qrCode} />
+                <img className='qr-code-img' src={qrCode} />
             </p>
             <br />
             <p className='flow-text center'>

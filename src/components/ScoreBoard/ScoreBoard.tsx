@@ -26,6 +26,8 @@ function ScoreBoard() {
                 navigate(`/`)
                 return
             }
+
+            console.error(err)
         })
     }
 
