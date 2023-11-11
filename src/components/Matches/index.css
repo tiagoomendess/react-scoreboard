@@ -3,3 +3,7 @@
     flex-direction: column;
     flex-wrap: wrap;
 }
+
+.mb-20 {
+    margin-bottom: 20px;
+}
