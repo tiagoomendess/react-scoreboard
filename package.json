@@ -47,5 +47,9 @@
   },
   "devDependencies": {
     "@types/uuid": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
   }
 }
