@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getClientId } from '../helpers/clientId';
 
 const baseUrl =  process.env.NODE_ENV === 'production' ? 'https://placard-api.domingoasdez.com/scoreboards' : 'http://localhost:3001/scoreboards';
 
@@ -13,6 +14,7 @@ export interface IScoreBoard {
     isFinished: boolean,
     timerStart: number | null,
     timerPausedAt: number | null,
+    uuid: string|null,
 }
 
 export interface IReserve {
@@ -38,6 +40,9 @@ async function create(matchId: number, code: number | null) : Promise<IScoreBoar
 }
 
 async function update(scoreboard : IScoreBoard) : Promise<IScoreBoard> {
+    let clientId = getClientId();
+    scoreboard.uuid = clientId;
+
     let { data } = await axios.put(`${baseUrl}/${scoreboard.code}`, scoreboard);
     if (data && data.success)
         return data.updated;

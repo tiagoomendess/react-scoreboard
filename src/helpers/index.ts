@@ -6,3 +6,6 @@ export {
     baseUrl,
     baseApiUrl
 }
+
+// Export client ID utilities
+export { getClientId, initializeClientId, clearClientId, hasClientId } from './clientId';
